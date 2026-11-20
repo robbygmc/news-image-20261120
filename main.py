@@ -28,6 +28,11 @@ def main() -> None:
     assert len(data) <= 1_048_576, "entry.png is over 1 MiB"
     assert hashlib.sha256(SOURCE.read_bytes()).hexdigest() == \
         hashlib.sha256(data).hexdigest(), "entry.png mismatch"
+    # The bounty wants a 1024x1024 front page: verify the PNG's own header.
+    width = int.from_bytes(data[16:20], "big")
+    height = int.from_bytes(data[20:24], "big")
+    assert (width, height) == (1024, 1024), \
+        f"entry.png is {width}x{height}, not 1024x1024"
 
 
 if __name__ == "__main__":
